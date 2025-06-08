@@ -30,6 +30,13 @@ public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
+    public UserEntity(String fullname, String email, String password) {
+        this.fullname = fullname;
+        this.email = email;
+        this.password = password;
+    }
+
     private String fullname;
     private String email;
     private String password;

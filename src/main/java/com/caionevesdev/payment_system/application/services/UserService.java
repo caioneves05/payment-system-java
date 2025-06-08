@@ -2,6 +2,8 @@ package com.caionevesdev.payment_system.application.services;
 
 import com.caionevesdev.payment_system.domain.entity.UserEntity;
 import com.caionevesdev.payment_system.domain.repository.UserRepository;
+import com.caionevesdev.payment_system.infraestructure.dtos.user.UserResponseDTO;
+import com.caionevesdev.payment_system.utils.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +17,7 @@ public class UserService {
 
     private PasswordEncoder passwordEncoder;
 
-    public UserEntity createUser(UserEntity user) {
+    public UserResponseDTO createUser(UserEntity user) {
 
         UserDetails hasThisUser = userRepository.findByEmail(user.getEmail());
 
@@ -23,10 +25,21 @@ public class UserService {
             throw new RuntimeException("User already exist!");
         }
 
-        String encondedPassword = passwordEncoder.encode(user.getPassword());
+        String encodePassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodePassword);
 
-        user.setPassword(encondedPassword);
+        String randomCode = RandomString.generateRandomString(64);
 
-        return userRepository.save(user);
+        user.setVerificationCode(randomCode);
+        user.setActive(false);
+
+        UserEntity newUser = userRepository.save(user);
+
+        return new UserResponseDTO(
+                newUser.getId(),
+                newUser.getFullname(),
+                newUser.getEmail(),
+                newUser.getPassword()
+        );
     }
 }
