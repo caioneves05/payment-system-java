@@ -121,4 +121,7 @@ public class UserEntity implements UserDetails {
         this.active = active;
     }
 
+    public void setEnabled(boolean b) {
+
+    }
 }

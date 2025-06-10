@@ -7,4 +7,5 @@ import org.springframework.security.core.userdetails.UserDetails;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     UserDetails findByEmail(String email);
+    UserEntity findByVerificationCode(String verificationCode);
 }
